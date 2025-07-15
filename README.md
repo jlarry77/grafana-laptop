@@ -63,26 +63,26 @@ Internet connectivity on all machines for software installation.
 Follow these steps to set up your monitoring stack.
 
 STAGE 1: Set up the Monitoring Server (Fedora Server VM)
-Install Fedora Server (or RHEL):
-Choose either Fedora Server (latest features) or RHEL Developer Edition (stable, free for personal use).
+1. Install Fedora Server (or RHEL):
+  Choose either Fedora Server (latest features) or RHEL Developer Edition (stable, free for personal use).
 
-Update & Install Essentials:
-
+2. Update & Install Essentials:
+```
 sudo dnf update -y
 sudo dnf install -y git curl wget vim podman docker docker-compose
-
-Enable Docker:
-
+```
+3. Enable Docker:
+```
 sudo systemctl enable --now docker
 sudo usermod -aG docker $USER
 newgrp docker # You might need to log out and back in for group changes to apply
-
+```
 STAGE 2: Set Up Prometheus + Grafana Stack with Docker
-Create Project Directory:
-
+1. Create Project Directory:
+```
 mkdir ~/grafana-laptop && cd ~/grafana-laptop
-
-File Structure:
+```
+2. File Structure:
 Create the following directory and file structure:
 
 ```
@@ -93,13 +93,13 @@ grafana-laptop/
 └── grafana/
     └── (optional provisioning config)
 ```
-prometheus.yml Example:
-Create ~/grafana-laptop/prometheus/prometheus.yml with the following content.
+3. prometheus.yml Example:
+Create ```~/grafana-laptop/prometheus/prometheus.yml ```with the following content.
 
 Important: Replace TAILSCALE-IP-LAPTOP with the actual Tailscale IP of your target laptop (you'll get this in Stage 3).
 
-Important: Node Exporter's default port is 9100. Ensure this matches the port in your targets.
-
+Important: Node Exporter's default port is ```9100```. Ensure this matches the port in your targets.
+```
 global:
   scrape_interval: 10s
 
@@ -109,7 +109,6 @@ scrape_configs:
       - targets: ['localhost:9090'] # Prometheus scraping itself (internal to Docker network)
 
   - job_name: 'laptops'
-```
     static_configs:
       - targets:
           - 'TAILSCALE-IP-GHOST:9100' # Example: Replace with actual Tailscale IP and correct port
@@ -128,8 +127,7 @@ Note the Prometheus port 9091 on the host to avoid conflict with Fedora's Cockpi
 
 The :z flag is crucial for SELinux on Fedora.
 
-version: '3.8'
-
+```
 services:
   prometheus:
     image: prom/prometheus
@@ -149,16 +147,16 @@ services:
 
 volumes:
   grafana-storage:
-
-Launch the Stack:
+```
+5. Launch the Stack:
 From the ~/grafana-laptop directory:
-
+```
 docker compose up -d
-
+```
 Verify both containers are running:
-
+```
 docker ps
-
+```
 You should see grafana-laptop-prometheus-1 and grafana-laptop-grafana-1 both Up.
 
 STAGE 3: Set Up VPN with Tailscale
@@ -166,31 +164,31 @@ Install Tailscale on all devices (Fedora VM and target laptops):
 Follow the official instructions: https://tailscale.com/download
 
 Authenticate each machine to your Tailscale network:
-
+```
 sudo tailscale up
-
+```
 Follow the URL provided to authenticate.
 Get the Tailscale IPs of all devices (run this on each machine):
-
+```
 tailscale ip -4
-
+```
 Use these IPs to update your prometheus.yml file on the Fedora VM.
 
 STAGE 4: Install Node Exporters (on Target Laptops)
 This stage is performed on each Linux laptop you want to monitor.
 
-On Ubuntu & Kali Laptops:
-
+1. On Ubuntu & Kali Laptops:
+```
 sudo apt update
 sudo apt install -y prometheus-node-exporter
 sudo systemctl enable --now prometheus-node-exporter
-
+```
 Confirm it runs on port :9100. You can check by opening a browser on the laptop itself and navigating to http://localhost:9100/metrics.
 If you have a firewall (like ufw), ensure port 9100/tcp is allowed:
-
+```
 sudo ufw allow 9100/tcp
 sudo ufw reload
-
+```
 STAGE 5: Validate and Visualize in Grafana
 Access Grafana:
 Open a web browser on a machine connected to your Tailscale network and go to:
