@@ -4,13 +4,13 @@ global:
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['192.168.0.187:9090']
 
   - job_name: 'laptops'
     static_configs:
       - targets: ['100.103.215.113:8001']
         labels:
           instance: 'Empire'
-      - targets: ['100.96.230.47:8001']
+      - targets: ['100.96.230.47:9100']
         labels:
           instance: 'Ghost'
