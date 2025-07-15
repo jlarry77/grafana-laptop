@@ -214,41 +214,31 @@ You can import pre-built dashboards from Grafana Labs. For Node Exporter, search
 Enter the ID, click "Load", select your Prometheus data source, and click "Import".
 
 🛠️ Troubleshooting Tips
-Error response from daemon: failed to set up container networking... address already in use (Port 9090):
+- Error response from daemon: failed to set up container networking... address already in use (Port 9090):
+  - Solution: Fedora Server's Cockpit often uses port 9090. Change the host-side port mapping for Prometheus in docker-compose.yml to 9091:9090. (e.g., - "9091:9090").
 
-Solution: Fedora Server's Cockpit often uses port 9090. Change the host-side port mapping for Prometheus in docker-compose.yml to 9091:9090. (e.g., - "9091:9090").
+- Error loading config ... permission denied (Prometheus container exits):
+  - Cause: SELinux preventing Docker from accessing the mounted prometheus.yml file.
+  - Solution: In docker-compose.yml, add :z to the volume mount for prometheus.yml. Example: - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:z.
 
-Error loading config ... permission denied (Prometheus container exits):
+- Error scraping target: ... connect: connection refused:
+  - Cause 1: Exporter not running or on wrong port: The Node Exporter (or Windows Exporter) on the target laptop is either not running, or it's listening on a different port than configured in prometheus.yml.
+    - Verify: On the target laptop, check sudo systemctl status prometheus-node-exporter. Look for the "Listening on" address. Node Exporter's default port is 9100.
+    - Fix: Update the targets in prometheus.yml on your Fedora VM to use the correct port (e.g., 9100) for that laptop.
 
-Cause: SELinux preventing Docker from accessing the mounted prometheus.yml file.
+  - Cause 2: Firewall on target laptop: The target laptop's firewall is blocking incoming connections on the exporter's port.
+    - Verify: On Linux, sudo ufw status and check rules. On Windows, check Windows Defender Firewall inbound rules.
+    - Fix: Allow the necessary port (e.g., 9100/tcp) through the firewall.
 
-Solution: In docker-compose.yml, add :z to the volume mount for prometheus.yml. Example: - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:z.
-
-Error scraping target: ... connect: connection refused:
-
-Cause 1: Exporter not running or on wrong port: The Node Exporter (or Windows Exporter) on the target laptop is either not running, or it's listening on a different port than configured in prometheus.yml.
-
-Verify: On the target laptop, check sudo systemctl status prometheus-node-exporter. Look for the "Listening on" address. Node Exporter's default port is 9100.
-
-Fix: Update the targets in prometheus.yml on your Fedora VM to use the correct port (e.g., 9100) for that laptop.
-
-Cause 2: Firewall on target laptop: The target laptop's firewall is blocking incoming connections on the exporter's port.
-
-Verify: On Linux, sudo ufw status and check rules. On Windows, check Windows Defender Firewall inbound rules.
-
-Fix: Allow the necessary port (e.g., 9100/tcp) through the firewall.
-
-ping prometheus from Grafana container fails:
-
-Cause: Prometheus container is not running or not healthy.
-
-Fix: Use docker ps -a to check the status of the Prometheus container. If it's exited, check docker logs grafana-laptop-prometheus-1 for the reason it failed to start. Then run docker compose down && docker compose up -d after fixing any issues.
+- ping prometheus from Grafana container fails:
+  - Cause: Prometheus container is not running or not healthy.
+  - Fix: Use docker ps -a to check the status of the Prometheus container. If it's exited, check docker logs grafana-laptop-prometheus-1 for the reason it failed to start. Then run docker compose down && docker compose up -d after fixing any issues.
 
 🧠 Bonus Tips & Future Enhancements
-Prometheus Alerting: Configure Prometheus alert rules and set up Alertmanager for notifications (email, Slack, etc.) when metrics cross thresholds.
+- Prometheus Alerting: Configure Prometheus alert rules and set up Alertmanager for notifications (email, Slack, etc.) when metrics cross thresholds.
 
-Dynamic IP Discovery: Explore scripting Tailscale IP discovery (tailscale status --json) to automatically update prometheus.yml if your Tailscale IPs change frequently.
+- Dynamic IP Discovery: Explore scripting Tailscale IP discovery (tailscale status --json) to automatically update prometheus.yml if your Tailscale IPs change frequently.
 
-More Exporters: Integrate other Prometheus exporters (e.g., cadvisor for Docker container metrics, blackbox_exporter for endpoint probing).
+- More Exporters: Integrate other Prometheus exporters (e.g., cadvisor for Docker container metrics, blackbox_exporter for endpoint probing).
 
-Grafana Provisioning: Automate Grafana dashboard and data source setup using provisioning files in the grafana/ directory.
+- Grafana Provisioning: Automate Grafana dashboard and data source setup using provisioning files in the grafana/ directory.
