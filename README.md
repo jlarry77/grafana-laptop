@@ -24,6 +24,7 @@ Grafana: Queries Prometheus for data and displays it on customizable dashboards.
 Tailscale: A peer-to-peer VPN that creates a secure network between all devices, allowing Prometheus to reach exporters on remote machines.
 
 Node Exporter: Runs on target Linux laptops, exposing system metrics (CPU, memory, disk, network, etc.) on a specific port.
+```
 
 +-------------------+      Tailscale VPN      +-------------------+
 |  Fedora Server VM |<----------------------->|  Target Laptop 1  |
@@ -44,6 +45,8 @@ Node Exporter: Runs on target Linux laptops, exposing system metrics (CPU, memor
 |                   |                         |  Target Laptop 2  |
 +-------------------+                         | (Node Exporter)   |
                                               +-------------------+
+
+```
 
 📋 Prerequisites
 Before you begin, ensure you have the following:
