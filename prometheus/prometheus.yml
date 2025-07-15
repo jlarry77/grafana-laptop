@@ -10,7 +10,7 @@ scrape_configs:
     static_configs:
       - targets: ['100.103.215.113:9100']
         labels:
-          instance: 'Empire'
+          hostname: 'Empire'
       - targets: ['100.96.230.47:9100']
         labels:
-          instance: 'Ghost'
+          hostname: 'Ghost'
