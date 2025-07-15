@@ -85,13 +85,14 @@ mkdir ~/grafana-laptop && cd ~/grafana-laptop
 File Structure:
 Create the following directory and file structure:
 
+```
 grafana-laptop/
 ├── docker-compose.yml
 ├── prometheus/
 │   └── prometheus.yml
 └── grafana/
     └── (optional provisioning config)
-
+```
 prometheus.yml Example:
 Create ~/grafana-laptop/prometheus/prometheus.yml with the following content.
 
@@ -108,17 +109,18 @@ scrape_configs:
       - targets: ['localhost:9090'] # Prometheus scraping itself (internal to Docker network)
 
   - job_name: 'laptops'
+```
     static_configs:
       - targets:
           - 'TAILSCALE-IP-GHOST:9100' # Example: Replace with actual Tailscale IP and correct port
         labels:
           instance: 'Ghost'
-      # Add more laptops here as needed, e.g.:
-      # - targets:
-      #     - 'TAILSCALE-IP-EMPIRE:9100'
-      #   labels:
-      #     instance: 'Empire'
-
+       Add more laptops here as needed, e.g.:
+       - targets:
+           - 'TAILSCALE-IP-EMPIRE:9100'
+         labels:
+           instance: 'Empire'
+```
 docker-compose.yml:
 Create ~/grafana-laptop/docker-compose.yml with the following content.
 
