@@ -1,5 +1,10 @@
 # Monitoring Stack with Prometheus, Grafana, and Tailscale
-https://prometheus.io/
+![Prometheus](https://img.shields.io/badge/Monitoring-Prometheus-orange?logo=prometheus)
+![Grafana](https://img.shields.io/badge/Dashboard-Grafana-F46800?logo=grafana&logoColor=white)
+![Docker](https://img.shields.io/badge/Containerized-Docker-2496ED?logo=docker&logoColor=white)
+![Tailscale](https://img.shields.io/badge/Networking-Tailscale-007ACC?logo=tailscale)
+![Fedora](https://img.shields.io/badge/OS-Fedora-294172?logo=fedora&logoColor=white)
+
 
 This project outlines the setup of a robust monitoring solution using Prometheus and Grafana, deployed via Docker Compose on a Fedora Server VM, to collect metrics from various devices (laptops) connected via Tailscale VPN.
 
