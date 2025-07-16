@@ -54,11 +54,6 @@ Node Exporter: Runs on target Linux laptops, exposing system metrics (CPU, memor
 
 ```
 
-[Grafana] <---> [Prometheus] <---> [Node Exporter on Laptop]
-           |                                 |
-        Docker                         Tailscale VPN
-
-
 
 📋 Prerequisites
 Before you begin, ensure you have the following:
@@ -80,11 +75,13 @@ STAGE 1: Set up the Monitoring Server (Fedora Server VM)
 
 2. Update & Install Essentials:
 ```
+bash
 sudo dnf update -y
 sudo dnf install -y git curl wget vim podman docker docker-compose
 ```
 3. Enable Docker:
 ```
+bash
 sudo systemctl enable --now docker
 sudo usermod -aG docker $USER
 newgrp docker # You might need to log out and back in for group changes to apply
@@ -92,6 +89,7 @@ newgrp docker # You might need to log out and back in for group changes to apply
 STAGE 2: Set Up Prometheus + Grafana Stack with Docker
 1. Create Project Directory:
 ```
+bash
 mkdir ~/grafana-laptop && cd ~/grafana-laptop
 ```
 2. File Structure:
@@ -112,6 +110,7 @@ Important: Replace TAILSCALE-IP-LAPTOP with the actual Tailscale IP of your targ
 
 Important: Node Exporter's default port is ```9100```. Ensure this matches the port in your targets.
 ```
+bash
 global:
   scrape_interval: 10s
 
@@ -140,6 +139,7 @@ Note the Prometheus port 9091 on the host to avoid conflict with Fedora's Cockpi
 The :z flag is crucial for SELinux on Fedora.
 
 ```
+bash
 services:
   prometheus:
     image: prom/prometheus
@@ -163,10 +163,12 @@ volumes:
 5. Launch the Stack:
 From the ~/grafana-laptop directory:
 ```
+bash
 docker compose up -d
 ```
 Verify both containers are running:
 ```
+bash
 docker ps
 ```
 You should see grafana-laptop-prometheus-1 and grafana-laptop-grafana-1 both Up.
@@ -177,11 +179,13 @@ Follow the official instructions: https://tailscale.com/download
 
 Authenticate each machine to your Tailscale network:
 ```
+bash
 sudo tailscale up
 ```
 Follow the URL provided to authenticate.
 Get the Tailscale IPs of all devices (run this on each machine):
 ```
+bash
 tailscale ip -4
 ```
 Use these IPs to update your prometheus.yml file on the Fedora VM.
@@ -191,6 +195,7 @@ This stage is performed on each Linux laptop you want to monitor.
 
 1. On Ubuntu & Kali Laptops:
 ```
+bash
 sudo apt update
 sudo apt install -y prometheus-node-exporter
 sudo systemctl enable --now prometheus-node-exporter
@@ -198,6 +203,7 @@ sudo systemctl enable --now prometheus-node-exporter
 Confirm it runs on port :9100. You can check by opening a browser on the laptop itself and navigating to http://localhost:9100/metrics.
 If you have a firewall (like ufw), ensure port 9100/tcp is allowed:
 ```
+bash
 sudo ufw allow 9100/tcp
 sudo ufw reload
 ```
