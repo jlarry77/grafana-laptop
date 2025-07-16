@@ -5,7 +5,6 @@
 ![Tailscale](https://img.shields.io/badge/Networking-Tailscale-007ACC?logo=tailscale)
 ![Fedora](https://img.shields.io/badge/OS-Fedora-294172?logo=fedora&logoColor=white)
 
-
 This project outlines the setup of a robust monitoring solution using Prometheus and Grafana, deployed via Docker Compose on a Fedora Server VM, to collect metrics from various devices (laptops) connected via Tailscale VPN.
 
 🌟 Features
