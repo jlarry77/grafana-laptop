@@ -177,7 +177,7 @@ STAGE 3: Set Up VPN with Tailscale
 Install Tailscale on all devices (Fedora VM and target laptops):
 Follow the official instructions: https://tailscale.com/download
 
-Authenticate each machine to your Tailscale network:
+Authenticate each machine to your Tailscale network (if you haven't installed Tailscale yet, the tailscale-fedora-install.sh script is available in this repository and in my automation-scripts repository):
 ```
 bash
 sudo tailscale up
