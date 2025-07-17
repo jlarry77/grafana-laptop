@@ -174,20 +174,23 @@ docker ps
 You should see grafana-laptop-prometheus-1 and grafana-laptop-grafana-1 both Up.
 
 STAGE 3: Set Up VPN with Tailscale
-Install Tailscale on all devices (Fedora VM and target laptops):
-Follow the official instructions: https://tailscale.com/download
 
-Authenticate each machine to your Tailscale network (if you haven't installed Tailscale yet, the tailscale-fedora-install.sh script is available in this repository and in my automation-scripts repository):
-```
-bash
-sudo tailscale up
-```
-Follow the URL provided to authenticate.
-Get the Tailscale IPs of all devices (run this on each machine):
-```
-bash
-tailscale ip -4
-```
+1.  **Install Tailscale on all devices** (Fedora VM and target laptops):
+    * Follow the official instructions: [https://tailscale.com/download](https://tailscale.com/download)
+    * **Alternatively, for Fedora Versions 41+**, you can use the automated installation script available in this repository: [`tailscale-fedora-install.sh`](./tailscale-fedora-install.sh).
+        (This script is also available in my [automation-scripts repository](https://github.com/jlarry77/automation_scripts/tree/main/tailscale-fedora-install/tailscale-fedora-install.sh) for broader use.)
+
+2.  **Authenticate each machine** to your Tailscale network:
+    If you haven't authenticated yet, run the following command on each device and follow the URL provided to log in:
+
+    ```bash
+    sudo tailscale up
+    ```
+
+3.  **Get the Tailscale IPs** of all devices (run this on each machine):
+    ```bash
+    tailscale ip -4
+    ```
 Use these IPs to update your prometheus.yml file on the Fedora VM.
 
 STAGE 4: Install Node Exporters (on Target Laptops)
